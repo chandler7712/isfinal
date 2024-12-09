@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Typing Test Game</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #282c34;
+      color: #ffffff;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    #sentence {
+      margin: 20px 0;
+      font-size: 18px;
+      color: #61dafb;
+      text-align: center;
+    }
+    #input-box {
+      width: 80%;
+      max-width: 600px;
+      padding: 10px;
+      font-size: 16px;
+      border: 2px solid #61dafb;
+      border-radius: 5px;
+    }
+    #results {
+      margin-top: 20px;
+      font-size: 20px;
+      display: none;
+    }
+    #start-button {
+      padding: 10px 20px;
+      background-color: #61dafb;
+      color: #282c34;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #start-button:hover {
+      background-color: #52c7ea;
+    }
+  </style>
+</head>
+<body>
+  <h1>Typing Test Game</h1>
+  <button id="start-button">Start Typing Test</button>
+  <div id="sentence"></div>
+  <input type="text" id="input-box" placeholder="Start typing here..." disabled />
+  <div id="results"></div>
+  <script>
+    const sentences = [
+      "The quick brown fox jumps over the lazy dog.",
+      "Practice makes perfect, so keep typing fast.",
+      "Typing tests are a fun way to improve speed.",
+      "Every great achievement starts with a small step.",
+      "Coding is both challenging and rewarding."
+    ];
+
+    const startButton = document.getElementById('start-button');
+    const sentenceDiv = document.getElementById('sentence');
+    const inputBox = document.getElementById('input-box');
+    const resultsDiv = document.getElementById('results');
+
+    let startTime, endTime;
+
+    function startTest() {
+      // Reset previous state
+      sentenceDiv.textContent = '';
+      inputBox.value = '';
+      resultsDiv.style.display = 'none';
+      inputBox.disabled = false;
+
+      // Select a random sentence
+      const randomSentence = sentences[Math.floor(Math.random() * sentences.length)];
+      sentenceDiv.textContent = randomSentence;
+
+      // Start timer
+      startTime = new Date().getTime();
+
+      // Focus on input box
+      inputBox.focus();
+
+      // Listen for typing completion
+      inputBox.addEventListener('input', checkInput);
+    }
+
+    function checkInput() {
+      const typedText = inputBox.value;
+      const originalText = sentenceDiv.textContent;
+
+      // When the user completes typing the sentence
+      if (typedText === originalText) {
+        endTest();
+      }
+    }
+
+    function endTest() {
+      // Stop timer
+      endTime = new Date().getTime();
+
+      // Calculate results
+      const timeTaken = (endTime - startTime) / 1000; // Time in seconds
+      const wordCount = sentenceDiv.textContent.split(' ').length;
+      const wordsPerMinute = Math.round((wordCount / timeTaken) * 60);
+
+      // Display results
+      resultsDiv.textContent = `You typed at ${wordsPerMinute} WPM!`;
+      resultsDiv.style.display = 'block';
+
+      // Disable input
+      inputBox.disabled = true;
+
+      // Remove input event listener
+      inputBox.removeEventListener('input', checkInput);
+    }
+
+    startButton.addEventListener('click', startTest);
+  </script>
+</body>
+</html>
